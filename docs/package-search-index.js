@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"edu.kirkwood"},{"l":"edu.kirkwood.dao"},{"l":"edu.kirkwood.dao.impl"},{"l":"edu.kirkwood.model"},{"l":"edu.kirkwood.model.xml"}];updateSearchResults();
