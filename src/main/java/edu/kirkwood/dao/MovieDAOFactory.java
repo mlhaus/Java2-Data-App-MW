@@ -1,5 +1,6 @@
 package edu.kirkwood.dao;
 
+import edu.kirkwood.dao.impl.MySQLMovieDAO;
 import edu.kirkwood.dao.impl.XmlMovieDAO;
 
 import java.io.IOException;
@@ -37,8 +38,8 @@ public class MovieDAOFactory {
                     throw new  RuntimeException("xml.apiurl is empty");
                 }
                 return new XmlMovieDAO(apiURL);
-//            case "MYSQL":
-//                break;
+            case "MYSQL":
+                return new MySQLMovieDAO();
 //            case "JSON":
 //                break;
 //            case "MONGODB":
