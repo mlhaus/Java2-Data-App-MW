@@ -1,6 +1,7 @@
 package edu.kirkwood.dao.impl;
 
 import edu.kirkwood.dao.MovieDAO;
+import edu.kirkwood.model.Movie;
 import edu.kirkwood.model.xml.MovieSearchResult;
 import edu.kirkwood.model.xml.OmdbMovieResponse;
 
@@ -32,7 +33,20 @@ public class XmlMovieDAO implements MovieDAO {
      * @return A List of Movie objects that match the title
      */
     @Override
-    public List<MovieSearchResult> search(String title) {
+    public List<Movie> search(String title) {
+        List<MovieSearchResult> results = fetch(title);
+        List<Movie> movies = new ArrayList<>();
+        results.forEach(result -> {
+            Movie movie = new Movie();
+            movie.setTitle(result.getTitle());
+            movie.setId(result.getId());
+            movie.setReleaseYear(result.getReleaseYear());
+            movies.add(movie);
+        });
+        return movies;
+    }
+
+    public List<MovieSearchResult> fetch(String title) {
         if(url == null || url.isEmpty()) {
             throw new IllegalArgumentException("Url has to be defined");
         }

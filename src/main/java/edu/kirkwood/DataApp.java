@@ -3,6 +3,7 @@ package edu.kirkwood;
 import edu.kirkwood.dao.MovieDAO;
 import edu.kirkwood.dao.MovieDAOFactory;
 import edu.kirkwood.dao.impl.XmlMovieDAO;
+import edu.kirkwood.model.Movie;
 import edu.kirkwood.model.xml.MovieSearchResult;
 
 import java.util.List;
@@ -12,9 +13,9 @@ public class DataApp {
         try {
             MovieDAO movieDAO = MovieDAOFactory.getMovieDAO();
             // Prompt user for a movie title
-            String search = "Scream";
+            String search = "101";
             if(movieDAO instanceof XmlMovieDAO) {
-                List<MovieSearchResult> movies = ((XmlMovieDAO)movieDAO).search(search);
+                List<Movie> movies = ((XmlMovieDAO)movieDAO).search(search);
                 movies.forEach(System.out::println);
             }
         } catch (Exception e) {

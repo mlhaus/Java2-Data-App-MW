@@ -15,5 +15,5 @@ public interface MovieDAO {
      * @param title The title of a movie
      * @return A List of Movie objects that match the title
      */
-    List<MovieSearchResult> search(String title);
+    List<Movie> search(String title);
 }
