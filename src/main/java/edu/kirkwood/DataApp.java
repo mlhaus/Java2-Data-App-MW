@@ -7,6 +7,7 @@ import edu.kirkwood.dao.impl.XmlMovieDAO;
 import edu.kirkwood.model.Movie;
 import edu.kirkwood.model.xml.MovieSearchResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataApp {
@@ -14,14 +15,15 @@ public class DataApp {
         try {
             MovieDAO movieDAO = MovieDAOFactory.getMovieDAO();
             // Prompt user for a movie title
-            String search = "101";
+            String search = "batman";
+            List<Movie> movies = new ArrayList<>();
             if(movieDAO instanceof XmlMovieDAO) {
-                List<Movie> movies = ((XmlMovieDAO)movieDAO).search(search);
-                movies.forEach(System.out::println);
+                movies.addAll(((XmlMovieDAO)movieDAO).search(search));
+
             } else if(movieDAO instanceof MySQLMovieDAO) {
-                List<Movie> movies = ((MySQLMovieDAO)movieDAO).search(search);
-                movies.forEach(System.out::println);
+                movies.addAll(((MySQLMovieDAO)movieDAO).search(search));
             }
+            movies.forEach(System.out::println);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }

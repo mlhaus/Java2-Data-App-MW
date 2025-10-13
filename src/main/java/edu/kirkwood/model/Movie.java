@@ -6,14 +6,16 @@ public class Movie {
     private String id;
     private String title;
     private int releaseYear;
+    private String plot;
     
     public Movie() {
     }
 
-    public Movie(String id, String title, int releaseYear) {
+    public Movie(String id, String title, int releaseYear, String plot) {
         this.id = id;
         this.title = title;
         this.releaseYear = releaseYear;
+        this.plot = plot;
     }
 
     public String getId() {
@@ -38,6 +40,14 @@ public class Movie {
 
     public void setReleaseYear(int releaseYear) {
         this.releaseYear = releaseYear;
+    }
+
+    public String getPlot() {
+        return plot;
+    }
+
+    public void setPlot(String plot) {
+        this.plot = plot;
     }
 
     @Override

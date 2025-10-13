@@ -3,6 +3,7 @@ package edu.kirkwood.dao;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -22,11 +23,26 @@ public class MySQLConnection {
     }
 
     public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch(ClassNotFoundException e) {
+            throw new RuntimeException("MySQL driver not found");
+        }
+
         String connectionString =  properties.getProperty("mysql.connectionString");
         if(connectionString == null || connectionString.isEmpty()) {
             throw new RuntimeException("MySQL Connection String cannot be found.");
         }
 
-        return null;
+        try {
+            Connection connection = DriverManager.getConnection(connectionString);
+            if(connection.isValid(2)) {
+                return connection;
+            } else {
+                throw new RuntimeException("Failed to connect to MySQL database");
+            }
+        } catch(SQLException e) {
+            throw new RuntimeException("Please check your connection string for error. " + e.getMessage());
+        }
     }
 }
