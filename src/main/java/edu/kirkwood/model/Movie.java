@@ -56,6 +56,7 @@ public class Movie {
                 "id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", releaseYear=" + releaseYear +
+                ", plot=" + plot +
                 '}';
     }
 

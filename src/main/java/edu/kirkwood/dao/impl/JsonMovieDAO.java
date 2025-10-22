@@ -1,6 +1,7 @@
 package edu.kirkwood.dao.impl;
 
 import com.google.gson.*;
+import edu.kirkwood.dao.JsonTypeAdapter;
 import edu.kirkwood.dao.MovieDAO;
 import edu.kirkwood.model.Movie;
 import edu.kirkwood.model.json.TmdbMovieResponse;
@@ -9,6 +10,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class JsonMovieDAO implements MovieDAO {
@@ -19,10 +22,10 @@ public class JsonMovieDAO implements MovieDAO {
         this.apiKey = apiKey;
     }
 
-    public String fetchRawData(String title) {
+    public String fetchRawData(String title, int page) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(apiURL + "query=" + title) // Todo: add pagination
+                .url(apiURL + "query=" + title + "&page=" + page)
                 .get()
                 .addHeader("Authorization", "Bearer " + apiKey)
                 .addHeader("accept", "application/json")
@@ -63,15 +66,39 @@ public class JsonMovieDAO implements MovieDAO {
      */
     @Override
     public List<Movie> search(String title) {
-        String rawData = fetchRawData(title);
-        Gson gson = new GsonBuilder().create();
-        TmdbMovieResponse movieResponse = null;
-        try {
-            movieResponse = gson.fromJson(rawData, TmdbMovieResponse.class);
-        } catch(JsonSyntaxException e) {
-            throw new RuntimeException(e);
+        List<Movie> movies = new ArrayList<>();
+        int currentPage = 1;
+        while (true) {
+            String rawData = fetchRawData(title, currentPage);
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalDate.class, new JsonTypeAdapter.LocalDateDeserializer())
+                    .create();
+            // prettyPrint(rawData);
+            TmdbMovieResponse movieResponse = null;
+            try {
+                movieResponse = gson.fromJson(rawData, TmdbMovieResponse.class);
+            } catch (JsonSyntaxException e) {
+                throw new RuntimeException(e);
+            }
+            // System.out::println is an example of a method reference
+            // movieResponse.getResults().forEach(System.out::println);
+            // result -> is an example of a lambda expression
+            movieResponse.getResults().forEach(result -> {
+                Movie movie = new Movie();
+                movie.setId(result.getId());
+                movie.setTitle(result.getTitle());
+                if (result.getRelease_date() != null) {
+                    movie.setReleaseYear(result.getRelease_date().getYear());
+                }
+                movie.setPlot(result.getOverview());
+                movies.add(movie);
+            });
+            if(movieResponse.getTotal_pages() > currentPage) {
+                currentPage++;
+            } else {
+                break;
+            }
         }
-        movieResponse.getResults().forEach(System.out::println);
-        return List.of();
+        return movies;
     }
 }
