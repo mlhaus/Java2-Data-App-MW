@@ -1,8 +1,11 @@
 package edu.kirkwood.model;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Comparator;
 import java.util.Objects;
 /*  This is a Plain Old Java Object (POJO), aka Java Bean */
-public class Movie {
+public class Movie implements Comparable<Movie> {
     private String id;
     private String title;
     private int releaseYear;
@@ -60,15 +63,31 @@ public class Movie {
                 '}';
     }
 
+    /**
+     * Compares two Movie objects by their ID
+     * @param o The other Movie object to be compared
+     * @return An int indicating the order of two objects
+     */
+    @Override
+    public int compareTo(@NotNull Movie o) {
+        if(this.id.length() != o.id.length()) {
+            return Integer.compare(this.id.length(), o.id.length());
+        }
+        return this.id.compareToIgnoreCase(o.id);
+    }
+
+    public static Comparator<Movie> compareTitle = (m1, m2) -> m1.title.compareToIgnoreCase(m2.title);
+    public static Comparator<Movie> compareYear = Comparator.comparingInt(Movie::getReleaseYear);
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Movie movie = (Movie) o;
-        return releaseYear == movie.releaseYear && Objects.equals(id, movie.id) && Objects.equals(title, movie.title);
+        return releaseYear == movie.releaseYear && Objects.equals(id, movie.id) && Objects.equals(title, movie.title) && Objects.equals(plot, movie.plot);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, releaseYear);
+        return Objects.hash(id, title, releaseYear, plot);
     }
 }
